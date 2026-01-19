@@ -47,7 +47,7 @@ if st.button("Humanize Sekarang"):
             
             # --- TUKAR KEMBALI KE 1.5 FLASH (KUOTA 1,500 SEHARI) ---
             # Model ini paling stabil untuk Free Tier
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            model = genai.GenerativeModel('gemini-pro')
 
             banned_words = """
             delve, tapestry, landscape, realm, crucial, vital, pivotal, leveraging, fostering, 
@@ -84,3 +84,4 @@ if st.button("Humanize Sekarang"):
 
         except Exception as e:
             st.error(f"Ralat: {e}")
+
