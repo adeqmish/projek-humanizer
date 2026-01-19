@@ -19,8 +19,8 @@ footer {visibility: hidden;}
 st.markdown(hide_elements_css, unsafe_allow_html=True)
 # ---------------------------
 
-st.title("🎓 Academic Humanizer (Anti-Vocabulary)")
-st.markdown("Ubah teks AI kepada gaya akademik manusia.")
+st.title("🎓 Academic Humanizer (Clean Text)")
+st.markdown("Ubah teks AI kepada gaya akademik manusia (Format Teks Bersih).")
 
 # 2. Setup API Key
 if "GEMINI_API_KEY" in st.secrets:
@@ -46,7 +46,6 @@ if st.button("Humanize Sekarang"):
             genai.configure(api_key=api_key)
             model = genai.GenerativeModel('gemini-2.5-flash')
 
-            # Senarai Haram (Banned Words)
             banned_words = """
             delve, tapestry, landscape, realm, crucial, vital, pivotal, leveraging, fostering, 
             harnessing, underscore, moreover, furthermore, in conclusion, comprehensive, 
@@ -54,15 +53,16 @@ if st.button("Humanize Sekarang"):
             spearhead, notable, significant, in essence, ultimately, it is important to note.
             """
 
+            # --- SAYA TAMBAH ARAHAN NO. 6 (NO MARKDOWN) ---
             prompt = f"""
             You are a strict academic editor. Rewrite the text below to bypass AI detection (ZeroGPT).
             
             CRITICAL INSTRUCTIONS:
             1. **VOCABULARY BAN:** You are FORBIDDEN from using these AI-cliché words: [{banned_words}]. Find simpler or more specific synonyms.
-            2. **SENTENCE RHYTHM:** Do not use a consistent rhythm. Write a very short sentence. Follow it with a long, complex sentence containing multiple commas. Then another short one.
-            3. **USE "WE" or "I":** If the context allows, change passive voice ("It was found") to active personal voice ("We found" or "I argue").
-            4. **BE DIRECT:** Remove "fluff" adjectives. Instead of "comprehensive analysis", just say "analysis".
-            5. **INTENTIONAL IMPERFECTION:** Do not try to be perfectly polished. Use slightly unusual sentence structures.
+            2. **SENTENCE RHYTHM:** Do not use a consistent rhythm. Mix short and long sentences.
+            3. **USE "WE" or "I":** Change passive voice to active personal voice where appropriate.
+            4. **INTENTIONAL IMPERFECTION:** Do not try to be perfectly polished.
+            5. **NO MARKDOWN FORMATTING:** Do NOT use bolding (**), italics (*), or headers (#). Do NOT use bullet points. Write in standard PLAIN TEXT paragraphs only.
             
             Original Text:
             {text_input}
@@ -73,12 +73,11 @@ if st.button("Humanize Sekarang"):
                 
                 st.success(f"Siap! (Tahap Kreativiti: {creativity})")
                 
-                # --- HASIL UTAMA (DALAM KOTAK SUPAYA ADA BUTTON COPY) ---
+                # Papar dalam kotak kod (Ada butang Copy, tapi teks dah bersih tanpa **)
                 st.caption("Tekan ikon kertas (Copy) di bucu kanan kotak di bawah:")
                 st.code(response.text, language=None)
                 
-                # --- TIPS DI BAWAH (Seperti yang diminta) ---
-                st.info("💡 Tips: Kalau ZeroGPT masih detect, cuba ubah sedikit perkataan pertama setiap perenggan atau tambah nama tempat/tarikh yang spesifik secara manual.")
+                st.info("💡 Tips: Kalau ZeroGPT masih detect, cuba ubah sedikit perkataan pertama setiap perenggan.")
 
         except Exception as e:
             st.error(f"Ralat: {e}")
