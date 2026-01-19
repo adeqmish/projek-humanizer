@@ -44,7 +44,7 @@ if st.button("Humanize Sekarang"):
     else:
         try:
             genai.configure(api_key=api_key)
-            model = genai.GenerativeModel('gemini-2.5-flash')
+            model = genai.GenerativeModel('gemini-1.5-flash')
 
             banned_words = """
             delve, tapestry, landscape, realm, crucial, vital, pivotal, leveraging, fostering, 
@@ -81,3 +81,4 @@ if st.button("Humanize Sekarang"):
 
         except Exception as e:
             st.error(f"Ralat: {e}")
+
