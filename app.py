@@ -4,8 +4,8 @@ import google.generativeai as genai
 # 1. Konfigurasi Halaman
 st.set_page_config(page_title="My Humanizer 2.5", page_icon="🚀")
 
-st.title("🚀 AI Humanizer (Enjin Gemini 2.5)")
-st.markdown("Versi terkini menggunakan model Gemini 2.5 Flash yang lebih laju.")
+st.title("🚀 AI Mish Humanizer")
+st.markdown("Versi terkini menggunakan model yang lebih laju.")
 
 # 2. Setup API Key
 if "GEMINI_API_KEY" in st.secrets:
@@ -41,7 +41,7 @@ if st.button("Humanize Sekarang"):
             {text_input}
             """
 
-            with st.spinner('Sedang memproses dengan Gemini 2.5...'):
+            with st.spinner('Sedang memproses...'):
                 response = model.generate_content(prompt)
                 st.success("Siap!")
                 st.subheader("Hasil:")
@@ -50,3 +50,4 @@ if st.button("Humanize Sekarang"):
                 
         except Exception as e:
             st.error(f"Ralat: {e}")
+
