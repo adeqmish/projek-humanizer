@@ -1,61 +1,49 @@
 import streamlit as st
 import google.generativeai as genai
 
-# 1. Konfigurasi Halaman
 st.set_page_config(page_title="My Humanizer", page_icon="🤖")
-
 st.title("🤖 AI Text Humanizer (Anti-Detect)")
-st.markdown("Masukkan teks AI, tekan butang, dan dapatkan teks gaya manusia.")
 
-# 2. Setup API Key (Auto-detect dari Server atau Manual)
-api_key = None
+# Setup API Key
 if "GEMINI_API_KEY" in st.secrets:
     api_key = st.secrets["GEMINI_API_KEY"]
 else:
-    api_key = st.text_input("Masukkan API Key (jika tiada dalam sistem):", type="password")
+    api_key = st.text_input("Masukkan API Key:", type="password")
 
-# 3. Kotak Input
-text_input = st.text_area("Masukkan Teks Di Sini:", height=200, placeholder="Paste teks ChatGPT/Gemini anda di sini...")
+text_input = st.text_area("Masukkan Teks:", height=200)
 
-# 4. Logik Pemprosesan
 if st.button("Humanize Sekarang"):
     if not api_key:
-        st.error("Sila masukkan API Key dahulu.")
-    elif not text_input:
-        st.warning("Tiada teks dimasukkan.")
+        st.error("Masukkan API Key dulu.")
     else:
         try:
-            # Setup Konfigurasi
             genai.configure(api_key=api_key)
             
-            # KITA GUNA GEMINI-PRO (Model Paling Stabil)
-            model = genai.GenerativeModel('gemini-pro')
+            # GUNA GEMINI 1.5 FLASH
+            model = genai.GenerativeModel('gemini-1.5-flash')
 
-            # Prompt Rahsia
             prompt = f"""
-            You are an expert ghostwriter. Rewrite the following text to bypass AI detectors like ZeroGPT.
+            Rewrite this text to bypass AI detection (ZeroGPT).
+            Make it sound natural, use varied sentence lengths (burstiness), 
+            and avoid robotic words. Keep original meaning.
             
-            Strategy to use:
-            1. BURSTINESS: Mix extremely short sentences with longer, complex sentences. 
-            2. PERPLEXITY: Use varied vocabulary. Avoid robotic transitions like "Moreover", "In conclusion", "Furthermore".
-            3. TONE: Write in a natural, conversational tone suitable for the context.
-            4. LANGUAGE: Keep the same language as the original text.
-            
-            Original Text:
-            {text_input}
+            Text: {text_input}
             """
-
-            with st.spinner('Sedang menulis semula...'):
+            
+            with st.spinner('Sedang memproses...'):
                 response = model.generate_content(prompt)
-                new_text = response.text
-                
                 st.success("Siap!")
-                st.subheader("Hasil:")
-                st.write(new_text)
-                st.code(new_text, language=None)
+                st.write(response.text)
+                st.code(response.text, language=None)
                 
         except Exception as e:
-            st.error(f"Ralat berlaku: {e}")
-
-st.divider()
-st.caption("Powered by Gemini Pro")
+            st.error(f"Ralat: {e}")
+            
+            # DEBUGGING: Kalau ralat lagi, ini akan tunjuk model apa yang available
+            st.warning("Senarai model yang dikesan di server:")
+            try:
+                for m in genai.list_models():
+                    if 'generateContent' in m.supported_generation_methods:
+                        st.write(f"- {m.name}")
+            except:
+                st.write("Gagal dapatkan senarai model.")
