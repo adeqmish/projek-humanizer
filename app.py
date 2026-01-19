@@ -4,7 +4,7 @@ import google.generativeai as genai
 # 1. Konfigurasi Halaman
 st.set_page_config(page_title="Academic Humanizer Ultimate", page_icon="🎓")
 
-# --- CSS UNTUK UI BERSIH ---
+# --- CSS UI BERSIH ---
 hide_elements_css = """
 <style>
 header {visibility: hidden;}
@@ -17,10 +17,10 @@ footer {visibility: hidden;}
 </style>
 """
 st.markdown(hide_elements_css, unsafe_allow_html=True)
-# ---------------------------
+# ---------------------
 
-st.title("🎓 Academic Humanizer (Clean Text)")
-st.markdown("Ubah teks AI kepada gaya akademik manusia (Format Teks Bersih).")
+st.title("🎓 Academic Humanizer (Case Study Mode)")
+st.markdown("Ubah teks kepada gaya analisis akademik (Third Person - 'Petronas/The Company').")
 
 # 2. Setup API Key
 if "GEMINI_API_KEY" in st.secrets:
@@ -53,31 +53,32 @@ if st.button("Humanize Sekarang"):
             spearhead, notable, significant, in essence, ultimately, it is important to note.
             """
 
-            # --- SAYA TAMBAH ARAHAN NO. 6 (NO MARKDOWN) ---
+            # --- PEMBAIKAN PENTING DI SINI (POINT NO. 3) ---
             prompt = f"""
-            You are a strict academic editor. Rewrite the text below to bypass AI detection (ZeroGPT).
+            You are an academic researcher writing a case study about a company (e.g., PETRONAS). 
+            Rewrite the text below to bypass AI detection (ZeroGPT) while maintaining an OBJECTIVE third-person tone.
             
             CRITICAL INSTRUCTIONS:
-            1. **VOCABULARY BAN:** You are FORBIDDEN from using these AI-cliché words: [{banned_words}]. Find simpler or more specific synonyms.
-            2. **SENTENCE RHYTHM:** Do not use a consistent rhythm. Mix short and long sentences.
-            3. **USE "WE" or "I":** Change passive voice to active personal voice where appropriate.
-            4. **INTENTIONAL IMPERFECTION:** Do not try to be perfectly polished.
-            5. **NO MARKDOWN FORMATTING:** Do NOT use bolding (**), italics (*), or headers (#). Do NOT use bullet points. Write in standard PLAIN TEXT paragraphs only.
+            1. **PERSPECTIVE SHIFT:** The original text might use "We" or "Our". You MUST change this to "Petronas", "The company", "The Group", or "Management". Do NOT use "We" or "I".
+            2. **VOCABULARY BAN:** Do NOT use these AI words: [{banned_words}].
+            3. **SENTENCE RHYTHM:** Mix short, direct sentences with longer, complex sentences to break the AI pattern.
+            4. **ACTIVE VOICE (THIRD PERSON):** Instead of "It was decided by the company" (Passive), say "Petronas decided to" (Active). This is crucial for passing ZeroGPT.
+            5. **NO MARKDOWN:** Do NOT use bold (**), italics, or bullet points. Write in standard plain text paragraphs.
             
             Original Text:
             {text_input}
             """
 
-            with st.spinner('Sedang memproses...'):
+            with st.spinner('Sedang menukar "We" kepada "Petronas"...'):
                 response = model.generate_content(prompt, generation_config=genai.types.GenerationConfig(temperature=creativity))
                 
                 st.success(f"Siap! (Tahap Kreativiti: {creativity})")
                 
-                # Papar dalam kotak kod (Ada butang Copy, tapi teks dah bersih tanpa **)
+                # Kotak Copy (Tanpa Bold/Simbol)
                 st.caption("Tekan ikon kertas (Copy) di bucu kanan kotak di bawah:")
                 st.code(response.text, language=None)
                 
-                st.info("💡 Tips: Kalau ZeroGPT masih detect, cuba ubah sedikit perkataan pertama setiap perenggan.")
+                st.info("💡 Tips: Periksa semula nama khas (seperti nama projek/tempat) untuk pastikan ejaannya betul.")
 
         except Exception as e:
             st.error(f"Ralat: {e}")
