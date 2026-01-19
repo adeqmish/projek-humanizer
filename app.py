@@ -31,8 +31,8 @@ if st.button("Humanize Sekarang"):
             genai.configure(api_key=api_key)
             
             # PENTING: Guna model 'gemini-1.5-flash' sebab ia laju & jimat kuota
-            model = genai.GenerativeModel('gemini-1.5-flash')
-
+            model = genai.GenerativeModel('gemini-pro')
+            
             # Prompt Rahsia (Arahan kepada AI)
             prompt = f"""
             You are an expert ghostwriter. Rewrite the following text to bypass AI detectors like ZeroGPT.
@@ -69,4 +69,5 @@ if st.button("Humanize Sekarang"):
 
 # 5. Info Kaki Halaman
 st.divider()
+
 st.caption("Nota: Menggunakan Gemini 1.5 Flash Free Tier. Had penggunaan: 15 request/minit.")
