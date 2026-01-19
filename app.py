@@ -20,7 +20,7 @@ st.markdown(hide_elements_css, unsafe_allow_html=True)
 # ---------------------------
 
 st.title("🎓 Academic Humanizer (Anti-Vocabulary)")
-st.markdown("Versi ini mengharamkan perkataan klise AI untuk kurangkan skor ZeroGPT.")
+st.markdown("Ubah teks AI kepada gaya akademik manusia (Bypass ZeroGPT).")
 
 # 2. Setup API Key
 if "GEMINI_API_KEY" in st.secrets:
@@ -28,8 +28,7 @@ if "GEMINI_API_KEY" in st.secrets:
 else:
     api_key = st.text_input("Masukkan API Key:", type="password")
 
-# 3. Slider Kawalan (PENTING UNTUK LAWAN ZEROGPT)
-# Default 0.9 (Agak tinggi). Kalau masih detect, naikkan ke 1.0
+# 3. Slider Kawalan
 creativity = st.slider("Tahap 'Kreativiti' (Tolak kanan jika ZeroGPT masih detect)", 
                        min_value=0.5, max_value=1.0, value=0.9, step=0.1)
 
@@ -47,12 +46,12 @@ if st.button("Humanize Sekarang"):
             genai.configure(api_key=api_key)
             model = genai.GenerativeModel('gemini-2.5-flash')
 
-            # --- SENARAI PERKATAAN YANG DIHARAMKAN (AI SELALU KANTOI SEBAB INI) ---
+            # --- SENARAI PERKATAAN HARAM (ANTI-AI) ---
             banned_words = """
             delve, tapestry, landscape, realm, crucial, vital, pivotal, leveraging, fostering, 
             harnessing, underscore, moreover, furthermore, in conclusion, comprehensive, 
             nuance, multifaceted, testament, game-changer, dynamic, myriad, plethora, 
-            spearhead, notable, significant, in essence, ultimately.
+            spearhead, notable, significant, in essence, ultimately, it is important to note.
             """
 
             prompt = f"""
@@ -63,23 +62,28 @@ if st.button("Humanize Sekarang"):
             2. **SENTENCE RHYTHM:** Do not use a consistent rhythm. Write a very short sentence. Follow it with a long, complex sentence containing multiple commas. Then another short one.
             3. **USE "WE" or "I":** If the context allows, change passive voice ("It was found") to active personal voice ("We found" or "I argue").
             4. **BE DIRECT:** Remove "fluff" adjectives. Instead of "comprehensive analysis", just say "analysis".
-            5. **INTENTIONAL IMPERFECTION:** Do not try to be perfectly polished. Use slightly unusual sentence structures that a native human speaker might use.
+            5. **INTENTIONAL IMPERFECTION:** Do not try to be perfectly polished. Use slightly unusual sentence structures.
             
             Original Text:
             {text_input}
             """
 
-            # Guna nilai dari slider tadi
-            config = genai.types.GenerationConfig(temperature=creativity)
-
-            with st.spinner('Sedang membuang perkataan AI...'):
-                response = model.generate_content(prompt, generation_config=config)
+            with st.spinner('Sedang memproses...'):
+                response = model.generate_content(prompt, generation_config=genai.types.GenerationConfig(temperature=creativity))
                 
-                st.success(f"Siap! (Tahap Kreativiti: {creativity})")
+                st.success(f"Siap! (Tahap: {creativity})")
+                
+                # BAHAGIAN 1: Teks untuk dibaca (Cantik, tiada kotak)
                 st.write("### Hasil:")
                 st.write(response.text)
                 
-                st.info("💡 Tips: Kalau masih detect, naikkan slider di atas ke 1.0 dan tekan butang sekali lagi.")
+                st.divider()
+                
+                # BAHAGIAN 2: Teks untuk di-copy (Dalam Expander)
+                # Kotak ni tersorok. User tekan baru nampak.
+                with st.expander("📄 Tekan sini untuk SALIN (Copy Text)"):
+                    st.code(response.text, language=None)
+                    st.caption("Tekan ikon 'Copy' kecil di bucu kanan kotak di atas.")
 
         except Exception as e:
             st.error(f"Ralat: {e}")
