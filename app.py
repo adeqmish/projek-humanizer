@@ -2,23 +2,23 @@ import streamlit as st
 import google.generativeai as genai
 
 # 1. Konfigurasi Halaman
-st.set_page_config(page_title="My Humanizer 2.5", page_icon="🚀")
+st.set_page_config(page_title="Academic Humanizer", page_icon="🎓")
 
-# --- KOD CSS: SOROKKAN SEMUA MENU & BUTANG ---
+# --- KOD CSS: SOROKKAN SEMUA MENU & BUTANG (Kekal Bersih) ---
 hide_elements_css = """
 <style>
-/* Sorokkan Header Atas (Termasuk butang Fork & GitHub) */
+/* Sorokkan Header Atas */
 header {visibility: hidden;}
 [data-testid="stHeader"] {visibility: hidden;}
 
-/* Sorokkan Menu Hamburger (3 titik di bucu kanan) */
+/* Sorokkan Menu Hamburger */
 #MainMenu {visibility: hidden;}
 
-/* Sorokkan Footer Bawah (Made with Streamlit) */
+/* Sorokkan Footer Bawah */
 footer {visibility: hidden;}
 [data-testid="stFooter"] {visibility: hidden;}
 
-/* Sorokkan Butang Merah 'Manage App' & Profil Admin */
+/* Sorokkan Butang Merah & Profil Admin */
 .stAppDeployButton {display: none;}
 [data-testid="stStatusWidget"] {visibility: hidden;}
 </style>
@@ -26,8 +26,8 @@ footer {visibility: hidden;}
 st.markdown(hide_elements_css, unsafe_allow_html=True)
 # --------------------------------------------
 
-st.title("🚀 AI Mish Humanizer")
-st.markdown("Versi terkini menggunakan model yang lebih laju.")
+st.title("🎓 Academic Humanizer")
+st.markdown("Ubah teks AI kepada gaya penulisan akademik (Assignment/Thesis) yang natural.")
 
 # 2. Setup API Key
 if "GEMINI_API_KEY" in st.secrets:
@@ -36,10 +36,10 @@ else:
     api_key = st.text_input("Masukkan API Key:", type="password")
 
 # 3. Kotak Input
-text_input = st.text_area("Masukkan Teks Di Sini:", height=200, placeholder="Paste teks AI anda di sini...")
+text_input = st.text_area("Masukkan Teks Assignment Di Sini:", height=250, placeholder="Paste teks AI anda di sini...")
 
 # 4. Logik Pemprosesan
-if st.button("Humanize Sekarang"):
+if st.button("Tukar Ke Gaya Akademik"):
     if not api_key:
         st.error("Sila masukkan API Key dahulu.")
     elif not text_input:
@@ -51,24 +51,27 @@ if st.button("Humanize Sekarang"):
             # Guna model Gemini 2.5 Flash
             model = genai.GenerativeModel('gemini-2.5-flash')
 
+            # --- PROMPT BARU: KHAS UNTUK AKADEMIK ---
             prompt = f"""
-            Rewrite the following text to bypass AI detectors like ZeroGPT.
+            You are a university student writing a high-quality academic paper. 
+            Rewrite the following text to bypass AI detectors (like ZeroGPT/Turnitin) while maintaining a formal academic tone.
             
-            Rules:
-            1. BURSTINESS: Mix short, punchy sentences with longer, complex ones. 
-            2. PERPLEXITY: Use varied vocabulary. Avoid robotic words like "Moreover", "In conclusion".
-            3. TONE: Natural, conversational, and slightly imperfect (human-like).
+            STRICT GUIDELINES:
+            1. TONE: Formal, objective, and professional. Do NOT use slang or conversational language.
+            2. NO AI CLICHES: Strictly avoid overused AI phrases like "In conclusion", "It is important to note", "Delving into", "In the realm of", "Moreover", "Furthermore". Use more natural academic transitions instead.
+            3. BURSTINESS: Vary your sentence structure significantly. Combine complex clauses with direct statements to break the predictable rhythm of AI text.
+            4. VOCABULARY: Use precise and sophisticated vocabulary suitable for university-level work.
             
             Original Text:
             {text_input}
             """
 
-            with st.spinner('Sedang memproses...'):
+            with st.spinner('Sedang menulis semula dengan gaya akademik...'):
                 response = model.generate_content(prompt)
                 st.success("Siap!")
-                st.subheader("Hasil:")
+                st.subheader("Hasil Akademik:")
                 
-                # --- HANYA TEKS BIASA (Kotak Gelap Dah Dibuang) ---
+                # Papar teks biasa sahaja (tiada kotak hitam)
                 st.write(response.text)
                 
         except Exception as e:
