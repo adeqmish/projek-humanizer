@@ -45,9 +45,8 @@ if st.button("Humanize Sekarang"):
         try:
             genai.configure(api_key=api_key)
             
-            # --- PENYELESAIAN: GUNA MODEL YANG MEMANG ADA DALAM LIST ANDA ---
-            # Tadi error log tunjuk model ini wujud dalam server anda.
-            model = genai.GenerativeModel('gemini-flash-latest')
+            # --- PENYELESAIAN UTAMA: TUKAR KE 1.5 FLASH (KUOTA 1,500) ---
+            model = genai.GenerativeModel('gemini-1.5-flash')
 
             banned_words = """
             delve, tapestry, landscape, realm, crucial, vital, pivotal, leveraging, fostering, 
@@ -56,7 +55,6 @@ if st.button("Humanize Sekarang"):
             spearhead, notable, significant, in essence, ultimately, it is important to note.
             """
 
-            # --- Prompt Pilihan Anda ---
             prompt = f"""
             You are a strict academic editor. Rewrite the text below to bypass AI detection (ZeroGPT).
             
@@ -76,7 +74,7 @@ if st.button("Humanize Sekarang"):
                 
                 st.success(f"Siap! (Tahap Kreativiti: {creativity})")
                 
-                # Papar dalam kotak kod (Ada butang Copy, teks bersih tanpa simbol **)
+                # Papar dalam kotak kod (Ada butang Copy, teks bersih tanpa simbol)
                 st.caption("Tekan ikon kertas (Copy) di bucu kanan kotak di bawah:")
                 st.code(response.text, language=None)
                 
