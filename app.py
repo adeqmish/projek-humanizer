@@ -1,6 +1,5 @@
 import streamlit as st
 import google.generativeai as genai
-import time
 
 # 1. Konfigurasi Halaman
 st.set_page_config(page_title="My Humanizer", page_icon="🤖")
@@ -13,7 +12,6 @@ api_key = None
 if "GEMINI_API_KEY" in st.secrets:
     api_key = st.secrets["GEMINI_API_KEY"]
 else:
-    # Backup kalau kawan nak guna key sendiri
     api_key = st.text_input("Masukkan API Key (jika tiada dalam sistem):", type="password")
 
 # 3. Kotak Input
@@ -27,13 +25,13 @@ if st.button("Humanize Sekarang"):
         st.warning("Tiada teks dimasukkan.")
     else:
         try:
-            # Setup Model
+            # Setup Konfigurasi
             genai.configure(api_key=api_key)
             
-            # PENTING: Guna model 'gemini-1.5-flash' sebab ia laju & jimat kuota
+            # KITA GUNA GEMINI-PRO (Model Paling Stabil)
             model = genai.GenerativeModel('gemini-pro')
-            
-            # Prompt Rahsia (Arahan kepada AI)
+
+            # Prompt Rahsia
             prompt = f"""
             You are an expert ghostwriter. Rewrite the following text to bypass AI detectors like ZeroGPT.
             
@@ -47,27 +45,17 @@ if st.button("Humanize Sekarang"):
             {text_input}
             """
 
-            with st.spinner('Sedang menulis semula... (Tunggu sekejap)'):
-                # Request ke Google
+            with st.spinner('Sedang menulis semula...'):
                 response = model.generate_content(prompt)
                 new_text = response.text
                 
-                # Paparkan Hasil
                 st.success("Siap!")
                 st.subheader("Hasil:")
                 st.write(new_text)
-                
-                # Butang Copy Mudah
                 st.code(new_text, language=None)
                 
         except Exception as e:
-            # Error Handling kalau terlebih limit
-            if "429" in str(e):
-                st.error("⚠️ Server sibuk (Rate Limit). Sila tunggu 1 minit dan cuba lagi.")
-            else:
-                st.error(f"Ralat berlaku: {e}")
+            st.error(f"Ralat berlaku: {e}")
 
-# 5. Info Kaki Halaman
 st.divider()
-
-st.caption("Nota: Menggunakan Gemini 1.5 Flash Free Tier. Had penggunaan: 15 request/minit.")
+st.caption("Powered by Gemini Pro")
