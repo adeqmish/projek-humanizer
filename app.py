@@ -44,8 +44,6 @@ if st.button("Humanize Sekarang"):
     else:
         try:
             genai.configure(api_key=api_key)
-            
-            # --- PENYELESAIAN UTAMA: TUKAR KE 1.5 FLASH (KUOTA 1,500) ---
             model = genai.GenerativeModel('gemini-2.5-flash')
 
             banned_words = """
@@ -55,6 +53,7 @@ if st.button("Humanize Sekarang"):
             spearhead, notable, significant, in essence, ultimately, it is important to note.
             """
 
+            # --- KOD KEKAL SAMA SEPERTI YANG AWAK MINTA ---
             prompt = f"""
             You are a strict academic editor. Rewrite the text below to bypass AI detection (ZeroGPT).
             
@@ -74,7 +73,7 @@ if st.button("Humanize Sekarang"):
                 
                 st.success(f"Siap! (Tahap Kreativiti: {creativity})")
                 
-                # Papar dalam kotak kod (Ada butang Copy, teks bersih tanpa simbol)
+                # Papar dalam kotak kod (Ada butang Copy, teks bersih tanpa simbol **)
                 st.caption("Tekan ikon kertas (Copy) di bucu kanan kotak di bawah:")
                 st.code(response.text, language=None)
                 
@@ -82,4 +81,3 @@ if st.button("Humanize Sekarang"):
 
         except Exception as e:
             st.error(f"Ralat: {e}")
-
