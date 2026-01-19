@@ -4,18 +4,23 @@ import google.generativeai as genai
 # 1. Konfigurasi Halaman
 st.set_page_config(page_title="My Humanizer 2.5", page_icon="🚀")
 
-# --- KOD TAMBAHAN: SOROKKAN MENU & FOOTER ---
-# Kod ini akan hilangkan bar atas, titik tiga menu, dan footer "Made with Streamlit"
+# --- KOD CSS: SOROKKAN SEMUA MENU & BUTANG ---
 hide_elements_css = """
 <style>
 /* Sorokkan Header Atas (Termasuk butang Fork & GitHub) */
 header {visibility: hidden;}
+[data-testid="stHeader"] {visibility: hidden;}
 
 /* Sorokkan Menu Hamburger (3 titik di bucu kanan) */
 #MainMenu {visibility: hidden;}
 
-/* Sorokkan Footer Bawah */
+/* Sorokkan Footer Bawah (Made with Streamlit) */
 footer {visibility: hidden;}
+[data-testid="stFooter"] {visibility: hidden;}
+
+/* Sorokkan Butang Merah 'Manage App' & Profil Admin */
+.stAppDeployButton {display: none;}
+[data-testid="stStatusWidget"] {visibility: hidden;}
 </style>
 """
 st.markdown(hide_elements_css, unsafe_allow_html=True)
@@ -25,7 +30,6 @@ st.title("🚀 AI Mish Humanizer")
 st.markdown("Versi terkini menggunakan model yang lebih laju.")
 
 # 2. Setup API Key
-# Dia akan cari dalam 'Secrets' dulu. Kalau tak ada, baru dia minta user masukkan.
 if "GEMINI_API_KEY" in st.secrets:
     api_key = st.secrets["GEMINI_API_KEY"]
 else:
@@ -44,7 +48,7 @@ if st.button("Humanize Sekarang"):
         try:
             genai.configure(api_key=api_key)
             
-            # KEMASKINI: Guna model yang wujud dalam senarai server anda
+            # Guna model Gemini 2.5 Flash
             model = genai.GenerativeModel('gemini-2.5-flash')
 
             prompt = f"""
@@ -63,10 +67,9 @@ if st.button("Humanize Sekarang"):
                 response = model.generate_content(prompt)
                 st.success("Siap!")
                 st.subheader("Hasil:")
-                st.write(response.text)
                 
-                # Kotak kod ini memudahkan copy-paste
-                st.code(response.text, language=None)
+                # --- HANYA TEKS BIASA (Kotak Gelap Dah Dibuang) ---
+                st.write(response.text)
                 
         except Exception as e:
             st.error(f"Ralat: {e}")
