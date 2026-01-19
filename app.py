@@ -1,49 +1,52 @@
 import streamlit as st
 import google.generativeai as genai
 
-st.set_page_config(page_title="My Humanizer", page_icon="🤖")
-st.title("🤖 AI Text Humanizer (Anti-Detect)")
+# 1. Konfigurasi Halaman
+st.set_page_config(page_title="My Humanizer 2.5", page_icon="🚀")
 
-# Setup API Key
+st.title("🚀 AI Humanizer (Enjin Gemini 2.5)")
+st.markdown("Versi terkini menggunakan model Gemini 2.5 Flash yang lebih laju.")
+
+# 2. Setup API Key
 if "GEMINI_API_KEY" in st.secrets:
     api_key = st.secrets["GEMINI_API_KEY"]
 else:
     api_key = st.text_input("Masukkan API Key:", type="password")
 
-text_input = st.text_area("Masukkan Teks:", height=200)
+# 3. Kotak Input
+text_input = st.text_area("Masukkan Teks Di Sini:", height=200)
 
+# 4. Logik Pemprosesan
 if st.button("Humanize Sekarang"):
     if not api_key:
-        st.error("Masukkan API Key dulu.")
+        st.error("Sila masukkan API Key dahulu.")
+    elif not text_input:
+        st.warning("Tiada teks dimasukkan.")
     else:
         try:
             genai.configure(api_key=api_key)
             
-            # GUNA GEMINI 1.5 FLASH
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            # KEMASKINI: Guna model yang wujud dalam senarai anda
+            model = genai.GenerativeModel('gemini-2.5-flash')
 
             prompt = f"""
-            Rewrite this text to bypass AI detection (ZeroGPT).
-            Make it sound natural, use varied sentence lengths (burstiness), 
-            and avoid robotic words. Keep original meaning.
+            Rewrite the following text to bypass AI detectors like ZeroGPT.
             
-            Text: {text_input}
+            Rules:
+            1. BURSTINESS: Mix short, punchy sentences with longer, complex ones. 
+            2. PERPLEXITY: Use varied vocabulary. Avoid robotic words like "Moreover", "In conclusion".
+            3. TONE: Natural, conversational, and slightly imperfect (human-like).
+            
+            Original Text:
+            {text_input}
             """
-            
-            with st.spinner('Sedang memproses...'):
+
+            with st.spinner('Sedang memproses dengan Gemini 2.5...'):
                 response = model.generate_content(prompt)
                 st.success("Siap!")
+                st.subheader("Hasil:")
                 st.write(response.text)
                 st.code(response.text, language=None)
                 
         except Exception as e:
             st.error(f"Ralat: {e}")
-            
-            # DEBUGGING: Kalau ralat lagi, ini akan tunjuk model apa yang available
-            st.warning("Senarai model yang dikesan di server:")
-            try:
-                for m in genai.list_models():
-                    if 'generateContent' in m.supported_generation_methods:
-                        st.write(f"- {m.name}")
-            except:
-                st.write("Gagal dapatkan senarai model.")
