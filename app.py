@@ -20,7 +20,7 @@ st.markdown(hide_elements_css, unsafe_allow_html=True)
 # ---------------------------
 
 st.title("🎓 Academic Humanizer (Anti-Vocabulary)")
-st.markdown("Ubah teks AI kepada gaya akademik manusia (Bypass ZeroGPT).")
+st.markdown("Ubah teks AI kepada gaya akademik manusia.")
 
 # 2. Setup API Key
 if "GEMINI_API_KEY" in st.secrets:
@@ -46,7 +46,7 @@ if st.button("Humanize Sekarang"):
             genai.configure(api_key=api_key)
             model = genai.GenerativeModel('gemini-2.5-flash')
 
-            # --- SENARAI PERKATAAN HARAM (ANTI-AI) ---
+            # Senarai Haram (Banned Words)
             banned_words = """
             delve, tapestry, landscape, realm, crucial, vital, pivotal, leveraging, fostering, 
             harnessing, underscore, moreover, furthermore, in conclusion, comprehensive, 
@@ -71,19 +71,14 @@ if st.button("Humanize Sekarang"):
             with st.spinner('Sedang memproses...'):
                 response = model.generate_content(prompt, generation_config=genai.types.GenerationConfig(temperature=creativity))
                 
-                st.success(f"Siap! (Tahap: {creativity})")
+                st.success(f"Siap! (Tahap Kreativiti: {creativity})")
                 
-                # BAHAGIAN 1: Teks untuk dibaca (Cantik, tiada kotak)
-                st.write("### Hasil:")
-                st.write(response.text)
+                # --- HASIL UTAMA (DALAM KOTAK SUPAYA ADA BUTTON COPY) ---
+                st.caption("Tekan ikon kertas (Copy) di bucu kanan kotak di bawah:")
+                st.code(response.text, language=None)
                 
-                st.divider()
-                
-                # BAHAGIAN 2: Teks untuk di-copy (Dalam Expander)
-                # Kotak ni tersorok. User tekan baru nampak.
-                with st.expander("📄 Tekan sini untuk SALIN (Copy Text)"):
-                    st.code(response.text, language=None)
-                    st.caption("Tekan ikon 'Copy' kecil di bucu kanan kotak di atas.")
+                # --- TIPS DI BAWAH (Seperti yang diminta) ---
+                st.info("💡 Tips: Kalau ZeroGPT masih detect, cuba ubah sedikit perkataan pertama setiap perenggan atau tambah nama tempat/tarikh yang spesifik secara manual.")
 
         except Exception as e:
             st.error(f"Ralat: {e}")
